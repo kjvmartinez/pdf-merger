@@ -3,6 +3,7 @@ from PyPDF2 import PdfMerger as pdfM
 
 import glob
 import os
+from datetime import datetime
 
 ''''
 Create all directories and subdirectories.
@@ -21,6 +22,7 @@ def create_dirs():
         'Cri B' : 'CRITERION B Inventions',
         'Cri C' : 'CRITERION C Creative Works',
     }
+ 
 
     KRA_I =[
         './{}/{}'.format(kra1_dictionary.get('level 0'),kra1_dictionary.get('Cri A')),
@@ -57,7 +59,6 @@ def create_dirs():
         './{}/{}/1.2 Exhibition'.format(kra2_dictionary.get('level 0'),kra2_dictionary.get('Cri C')),
         './{}/{}/1.3 Juried or Peer-Reviewed Designs'.format(kra2_dictionary.get('level 0'),kra2_dictionary.get('Cri C')),
         './{}/{}/1.4 Literary Publications'.format(kra2_dictionary.get('level 0'),kra2_dictionary.get('Cri C'))
-
         ]
 
 
@@ -72,8 +73,8 @@ def create_dirs():
 Scan all KRA folders.
 Return: All folders that are not empty and contains pdf file. 
 '''
-def scan_folders():
-    KRAs = ['./KRA I','./KRA II']
+def scan_folders(fpath):
+    KRAs = [f'{fpath}/KRA I',f'{fpath}/KRA II']
     list_roots = []
         
     for folder in KRAs:
@@ -89,6 +90,7 @@ def merge_pdf(files, filename):
     for i in files:
         merger.append(i)
     merger.write(filename)
+    return len(merger.pages)
 
 def main():
     '''
@@ -99,12 +101,23 @@ def main():
     '''
     Merge pdf files in not empty folders and save it as output.pdf
     '''
-    roots_not_empty = scan_folders()
+    # datetime object containing current date and time
+    now = datetime.now()
+ 
+    
+    folder_path = input("Enter path of folders: ")
+    file_path = f'{folder_path} {now} merge details.txt'
+    file = open(file_path, 'a')
+
+    roots_not_empty = scan_folders(folder_path)
     for folder in roots_not_empty:
         str_path = f"{folder}/**/*.pdf"
         print(f"{folder} [DONE]")
         files = glob.glob(str_path, recursive=True)
-        merge_pdf(files, folder + '/output.pdf')
+        number_of_pages = merge_pdf(files, folder + '/output.pdf')
+        file.write(f"{folder} {number_of_pages} pages" + '\n')
+    file.close()
+        
 
 if __name__ == "__main__":
     main()
