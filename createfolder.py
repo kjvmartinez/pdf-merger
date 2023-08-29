@@ -1,6 +1,3 @@
-import sys
-from PyPDF2 import PdfMerger as pdfM
-
 import glob
 import os
 from datetime import datetime
@@ -39,7 +36,6 @@ def create_dirs():
         'Cri D' : 'CRITERION D Bonus Indicators for Newly Appointed Faculty',
     }
  
-
     KRA_I =[
         './{}/{}'.format(kra1_dictionary.get('level 0'),kra1_dictionary.get('Cri A')),
         './{}/{}/1.1 STUDENT EVALUATION'.format(kra1_dictionary.get('level 0'),kra1_dictionary.get('Cri A')),
@@ -204,6 +200,7 @@ def create_dirs():
     
     for path in KRA_IV:
         os.makedirs(path)
+        
     for path in KRA_I:
         os.makedirs(path)
 
@@ -213,56 +210,12 @@ def create_dirs():
     for path in KRA_III:
         os.makedirs(path)
 
-
-''''
-Scan all KRA folders.
-Return: All folders that are not empty and contains pdf file. 
-'''
-def scan_folders(fpath):
-    KRAs = [f'{fpath}/KRA I',f'{fpath}/KRA II', f'{fpath}/KRA III']
-    list_roots = []
-        
-    for folder in KRAs:
-        for (root, dirs, files) in os.walk(folder, topdown=True):
-            if not (any(f.endswith('.pdf') for f in files)):
-                    continue
-            list_roots.append(root)
-    return list_roots
-            
-
-def merge_pdf(files, filename):
-    merger=pdfM()
-    for i in files:
-        merger.append(i)
-    merger.write(filename)
-    return len(merger.pages)
-
 def main():
     '''
     Create directories.
     ''' 
+    # folder_path = input("Enter your name (Last name, First name MI): ")
     create_dirs()
-   
-    '''
-    Merge pdf files in not empty folders and save it as output.pdf
-    '''
-    # datetime object containing current date and time
-    # now = datetime.now()
- 
-    
-    # folder_path = input("Enter path of folders: ")
-    # file_path = f'{folder_path} {now} merge details.txt'
-    # file = open(file_path, 'a')
-
-    # roots_not_empty = scan_folders(folder_path)
-    # for folder in roots_not_empty:
-    #     str_path = f"{folder}/**/*.pdf"
-    #     print(f"{folder} [DONE]")
-    #     files = glob.glob(str_path, recursive=True)
-    #     number_of_pages = merge_pdf(files, folder + '/output.pdf')
-    #     file.write(f"{folder} {number_of_pages} pages" + '\n')
-    # file.close()
-        
 
 if __name__ == "__main__":
     main()
