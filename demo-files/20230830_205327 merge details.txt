@@ -1,0 +1,4 @@
+📁 ..\demo-files\ 41 pages
+📁 ..\demo-files\childrens books\anime eme 157 pages
+📁 ..\demo-files\childrens books\another-folder 6 pages
+📁 ..\demo-files\scanned-files-eme 30 pages

@@ -3,6 +3,8 @@ from PyPDF2 import PdfMerger as pdfM
 import glob
 import os
 from datetime import datetime
+from PyPDF2 import PdfMerger
+import time
 
 # Define the create_dirs function before it's used in the main function
 # def scan_folders(fpath):
@@ -15,6 +17,7 @@ from datetime import datetime
 #                 continue
 #             list_roots.append(root)
 #     return list_roots
+
 
 def scan_folders(root_directory):
     list_roots = []
@@ -30,17 +33,24 @@ def merge_pdf(files, filename):
         print(f"Skipping merge for {filename} as there's only one PDF file.")
         return 0
 
-    merger = pdfM()
-    for i in files:
-        merger.append(i)
+    merger = PdfMerger()
+    for pdf_file in files:
+        merger.append(pdf_file)
+        
+        # merger.append(i)
     merger.write(filename)
-    return len(merger.pages)
+    num_pages = len(merger.pages)
+    merger.close()
+    return num_pages
 
 
 def main():
     '''
     Merge pdf files in not empty folders and save it as output.pdf
     '''
+    # Record the start time
+    start_time = time.time()
+
     now = datetime.now()
 
     folder_path = input("Enter path of parent folder:")
@@ -48,26 +58,37 @@ def main():
         folder_path += os.path.sep
     
     file_path = f"{folder_path}{now.strftime('%Y%m%d_%H%M%S')} merge details.txt"
-    
-    print(file_path)
 
-    f = open(file_path, "w")
+    f = open(file_path, "w", encoding='utf-8')
 
     roots_not_empty = scan_folders(folder_path)
-    print(roots_not_empty)
-
+    total_pages = 0
     for folder in roots_not_empty:
-        str_path = os.path.join(folder, '**/*.pdf')  # Use os.path.join for paths
-        print(f"Merging files in {folder}")
+        str_path = os.path.join(folder, '*.pdf')  # Use os.path.join for paths
+        # print(f"Merging files in {folder}")
         files = glob.glob(str_path, recursive=True)
         number_of_pages = merge_pdf(files, os.path.join(folder, 'output.pdf'))
         if number_of_pages > 0:
-            f.write(f"{folder}\n{number_of_pages} pages" + '\n')
-            print(f"Merged files in {folder} [DONE]")
+            f.write(f"📁 {folder} {number_of_pages} pages" + '\n')
+            total_pages += number_of_pages
+            print(f"📄 Merged files in {folder}")
         else:
             print(f"No merging done for {folder}")
     
     f.close()
+
+    # Record the end time
+    end_time = time.time()
+    
+    # Calculate the elapsed time
+    elapsed_time = end_time - start_time
+
+    # Print the elapsed time
+    print(f"Elapsed time: {elapsed_time:.6f} seconds Total Pages: {total_pages}")
+
+
+
+
 
 if __name__ == "__main__":
     main()
