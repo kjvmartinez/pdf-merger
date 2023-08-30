@@ -5,51 +5,25 @@ import os
 from datetime import datetime
 
 # Define the create_dirs function before it's used in the main function
-def scan_folders(fpath):
-    KRAs = [f'{fpath}/KRA I', f'{fpath}/KRA II']  # Added missing slashes
-    list_roots = []
+# def scan_folders(fpath):
+#     KRAs = [f'{fpath}/KRA I', f'{fpath}/KRA II',f'{fpath}/KRA III', f'{fpath}/KRA IV']  # Added missing slashes
+#     list_roots = []
         
-    for folder in KRAs:
-        for (root, dirs, files) in os.walk(folder, topdown=True):
-            if not any(f.endswith('.pdf') for f in files):
-                continue
+#     for folder in KRAs:
+#         for (root, dirs, files) in os.walk(folder, topdown=True):
+#             if not any(f.endswith('.pdf') for f in files):
+#                 continue
+#             list_roots.append(root)
+#     return list_roots
+
+def scan_folders(root_directory):
+    list_roots = []
+    
+    for (root, dirs, files) in os.walk(root_directory, topdown=True):
+        if any(f.endswith('.pdf') for f in files):
             list_roots.append(root)
+    
     return list_roots
-
-
-
-def create_dirs():
-    kra1_dictionary = {
-        'level 0': 'KRA I',
-        'Cri A': 'CRITERION A Teaching Effectiveness',
-        'Cri B': 'CRITERION B Curriculum and Instructional Materials Developed',
-        'Cri C': 'CRITERION C Special Projects, Capstone Projects, Thesis, Dissertation, and Mentorship Services',
-    }
-
-    kra2_dictionary = {
-        'level 0': 'KRA II',
-        'Cri A': 'CRITERION A Research, Innovation, and Creative Work',
-        'Cri B': 'CRITERION B Inventions',
-        'Cri C': 'CRITERION C Creative Works',
-    }
-
-    KRA_I = [
-        os.path.join(kra1_dictionary.get('level 0'), kra1_dictionary.get('Cri A')),
-        # ... Add other paths for KRA I criteria
-    ]
-
-    KRA_II = [
-        os.path.join(kra2_dictionary.get('level 0'), kra2_dictionary.get('Cri A')),
-        # ... Add other paths for KRA II criteria
-    ]
-
-    for path in KRA_I:
-        os.makedirs(path, exist_ok=True)
-
-    for path in KRA_II:
-        os.makedirs(path, exist_ok=True)
-
-# ... (other code remains the same)
 
 def merge_pdf(files, filename):
     if len(files) == 1:  # If there's only one PDF file, skip merging
@@ -62,20 +36,14 @@ def merge_pdf(files, filename):
     merger.write(filename)
     return len(merger.pages)
 
-# ... (other code remains the same)
 
 def main():
-    '''
-    Create directories.
-    '''
-    create_dirs()
-   
     '''
     Merge pdf files in not empty folders and save it as output.pdf
     '''
     now = datetime.now()
 
-    folder_path = input("Enter path of folders:")
+    folder_path = input("Enter path of parent folder:")
     if not folder_path.endswith(os.path.sep):
         folder_path += os.path.sep
     

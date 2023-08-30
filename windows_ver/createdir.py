@@ -229,17 +229,6 @@ def create_dirs(folder_path):
             path = os.path.join(folder_path, path)
             os.makedirs(path, exist_ok=True)
 
-    # for path in KRA_IV:
-    #     os.makedirs(path)
-        
-    # for path in KRA_I:
-    #     os.makedirs(path)
-
-    # for path in KRA_II:
-    #     os.makedirs(path)
-
-    # for path in KRA_III:
-    #     os.makedirs(path)
 def create_tree(root_dir, output_file, level=0):
     items = os.listdir(root_dir)
     for item in sorted(items):
